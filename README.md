@@ -1,0 +1,2 @@
+# MinecraftAvatatGenerator
+一个python编写的简易Minecraft双层皮肤的图像生成器
