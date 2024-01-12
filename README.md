@@ -1,4 +1,4 @@
-# MinecraftAvatatGenerator
+# MinecraftAvatarGenerator
 一个python编写的简易Minecraft双层皮肤的头像生成器，输入玩家昵称获取双层皮肤头像
 
 支持alpha通道（透明度）
