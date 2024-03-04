@@ -14,7 +14,12 @@ async def get_uuid(player_name):
         headers = {'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/62.0.3202.89 Safari/537.36'}
         uuid_rep = await loop.run_in_executor(None, lambda: requests.get(f"https://mcuuid.net/?q={player_name}", headers=headers))
         uuid_rep.raise_for_status()
-        uuid = re.search('<input id="results_raw_id".+?value="(.+?)">', uuid_rep.text).groups()[0]
+        uuid_match = re.search('<input id="results_raw_id".+?value="(.+?)">', uuid_rep.text)
+        if uuid_match:
+            uuid = uuid_match.groups()[0]
+        else:
+            print(f"\r  * Player {player_name} not found.")
+            return None, None
         print(f"\r  [step 2/3] Getting skin for player {player_name}...", end="")
         skin_rep = await loop.run_in_executor(None, lambda: requests.get(f"https://crafatar.com/skins/{uuid}"))
         skin_rep.raise_for_status()
@@ -24,7 +29,7 @@ async def get_uuid(player_name):
         print(f"\r  * Error when getting data for player {player_name}: {e}")
         return None, None
     except Exception as e:
-        print(f"\r  * Unknown Error: {e}")
+        print(f"\r  * Error: {e}")
         return None, None
 
 def img_array_zoom(array, scaling):
