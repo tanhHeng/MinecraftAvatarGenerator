@@ -3,17 +3,33 @@
 
 支持alpha通道（透明度）
 
-直接打开`AvatarGen.py`即可
+## 用法
+
+```
+python avgen.py <player_name>
+python avgen.py <player_name_1,player_name_2...>
+```
 
 ## 依赖
 
-`numpy` `matplotlib` `requests` `re`
+```
+numpy
+matplotlib
+requests
+nuitka
+```
 
 ## 使用的api
 
 `mcuuid.net` 用于获取玩家uuid
 
 `crafatar.com` 用于获取玩家皮肤
+
+## 从源码编译
+
+```
+python -m nuitka --lto=no --onefile avgen.py
+```
 
 ## 样例
 
