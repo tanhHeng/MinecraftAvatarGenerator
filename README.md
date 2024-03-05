@@ -12,8 +12,8 @@ python avgen.py <player_name1>,<player_name_2>,<...>
 
 如果你从`release`下载了`.exe`：
 ```
-.\avgen.exe <player_name>
-.\avgen.exe <player_name1>,<player_name2>,<...>
+.\avgen <player_name>
+.\avgen <player_name1>,<player_name2>,<...>
 ```
 
 *请不要在name之间的间隔多打一个空格，谢谢（*
