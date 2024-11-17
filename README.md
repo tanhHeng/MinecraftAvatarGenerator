@@ -53,10 +53,10 @@ pip install numpy matplotlib requests
 如果你想编译成可执行文件：
 ```bash
 # 安装编译工具
-pip install nuitka
+pip install pyinstaller
 
 # 编译
-python -m nuitka --lto=no --jobs=<job_count> --onefile avgen.py
+pyinstaller --onefile avgen.py
 ```
 
 ## 🔗 API 来源
