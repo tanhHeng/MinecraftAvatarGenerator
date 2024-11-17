@@ -93,20 +93,43 @@ async def save_avatar(player_name_skin_bytes):
         except OSError as e:
             print(f"\r  * Error saving avatar for player {player_name}: {e}")
 
+async def load_local_skin(file_path):
+    """从本地文件加载皮肤"""
+    try:
+        print(f"\r  [Loading] Reading skin from {file_path}...", end="")
+        player_name = os.path.splitext(os.path.basename(file_path))[0]
+        with open(file_path, 'rb') as f:
+            return player_name, BytesIO(f.read())
+    except Exception as e:
+        print(f"\r  * Error reading skin file {file_path}: {e}")
+        return None, None
+
 async def main():
     np.seterr(divide='ignore', invalid='ignore')
 
     parser = argparse.ArgumentParser(description='Generate avatar for Minecraft player')
-    parser.add_argument('player_names', type=str, help='The names of the Minecraft players, separated by comma (,)') 
+    group = parser.add_mutually_exclusive_group(required=True)
+    group.add_argument('--names', type=str, help='The names of the Minecraft players, separated by comma (,)')
+    group.add_argument('--dir', type=str, help='Directory containing skin files')
+    group.add_argument('--file', type=str, help='Single skin file')
     args = parser.parse_args()
 
-    if not args.player_names:
-        print("Error: No player names provided.")
-        sys.exit(1)
-
-    player_names = args.player_names.split(',')
-    tasks = [get_uuid(player_name) for player_name in player_names]
-    results = await asyncio.gather(*tasks)
+    if args.names:
+        player_names = args.names.split(',')
+        tasks = [get_uuid(player_name) for player_name in player_names]
+        results = await asyncio.gather(*tasks)
+    elif args.dir:
+        if not os.path.isdir(args.dir):
+            print(f"Error: Directory {args.dir} does not exist.")
+            sys.exit(1)
+        skin_files = [f for f in os.listdir(args.dir) if f.endswith(('.png'))]
+        tasks = [load_local_skin(os.path.join(args.dir, f)) for f in skin_files]
+        results = await asyncio.gather(*tasks)
+    else:  # args.file
+        if not os.path.isfile(args.file):
+            print(f"Error: File {args.file} does not exist.")
+            sys.exit(1)
+        results = [await load_local_skin(args.file)]
 
     for result in results:
         await save_avatar(result)
