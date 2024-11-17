@@ -74,7 +74,7 @@ def avatar_generate(skin, size=360):
 
     return avatar_new
 
-async def save_avatar(player_name_skin_bytes):
+async def save_avatar(player_name_skin_bytes, output_dir="avatar"):
     player_name, skin_bytes = player_name_skin_bytes
     if skin_bytes:
         print(f"  [Loading] Generating avatar for player {player_name}...", end="")
@@ -84,10 +84,9 @@ async def save_avatar(player_name_skin_bytes):
             print(f"\r  * Error generating avatar for player {player_name}.")
             return
 
-        save_path = "avatar"
         try:
-            os.makedirs(save_path, exist_ok=True)
-            file = os.path.join(save_path, f"{player_name}.png")
+            os.makedirs(output_dir, exist_ok=True)
+            file = os.path.join(output_dir, f"{player_name}.png")
             plt.imsave(file, avatar)
             print(f"\r  [Finish] Player {player_name}'s avatar is now saved at {file}.")
         except OSError as e:
@@ -109,9 +108,14 @@ async def main():
 
     parser = argparse.ArgumentParser(description='Generate avatar for Minecraft player')
     group = parser.add_mutually_exclusive_group(required=True)
-    group.add_argument('--names', type=str, help='The names of the Minecraft players, separated by comma (,)')
-    group.add_argument('--dir', type=str, help='Directory containing skin files')
-    group.add_argument('--file', type=str, help='Single skin file')
+    group.add_argument('-n', '--names', type=str,
+                      help='The names of the Minecraft players, separated by comma (,)')
+    group.add_argument('-d', '--dir', type=str,
+                      help='Directory containing skin files')
+    group.add_argument('-f', '--file', type=str,
+                      help='Single skin file')
+    parser.add_argument('-o', '--output', type=str, default="avatar",
+                      help='Output directory for avatars (default: avatar)')
     args = parser.parse_args()
 
     if args.names:
@@ -132,7 +136,7 @@ async def main():
         results = [await load_local_skin(args.file)]
 
     for result in results:
-        await save_avatar(result)
+        await save_avatar(result, args.output)
 
 if __name__ == "__main__":
     loop = asyncio.get_event_loop()
