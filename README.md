@@ -56,7 +56,7 @@ pip install numpy matplotlib requests
 pip install nuitka
 
 # 编译
-python -m nuitka --lto=no --onefile avgen.py
+python -m nuitka --lto=no --jobs=<job_count> --onefile avgen.py
 ```
 
 ## 🔗 API 来源
