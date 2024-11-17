@@ -35,12 +35,12 @@ jobs:
           python -m pip install --upgrade pip
           pip install -r requirements.txt
 
-      - name: Build with Nuitka
+      - name: Build with PyInstaller
         run: |
-          python -m nuitka --lto=no --onefile --output-filename=${{ matrix.output_name }} avgen.py
+          pyinstaller --onefile --name ${{ matrix.output_name }} avgen.py
 
       - name: Upload artifacts
         uses: actions/upload-artifact@v3
         with:
           name: ${{ matrix.output_name }}
-          path: ${{ matrix.output_name }}*
+          path: dist/${{ matrix.output_name }}*
